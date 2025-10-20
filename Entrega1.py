@@ -70,10 +70,10 @@ def altaSocio(clientes, buscar):
     while numTelefonos < 1:
         numTelefonos = int(input("Error! Ingrese cantidad de telefonos de nuevo: "))  
     for i in range (numTelefonos):
-        tel = int(input("Telefono " + str(i+1) + ": "))
+        tel = int(input("Telefono " + str(i + 1) + ": "))
         while len(str(tel)) < 10 or len(str(tel)) > 13 or tel < 0:
-            tel = int(input("Error! Ingrese Telefono " + str(i+1) + " de nuevo: "))
-        clientes[buscar]["telefonos"]["telefono"+str(i+1)] = tel
+            tel = int(input("Error! Ingrese Telefono " + str(i + 1) + " de nuevo: "))
+        clientes[buscar]["telefonos"]["telefono" + str(i + 1)] = tel
 
     print("Socio agregado exitosamente")
 
@@ -201,10 +201,10 @@ def modificarSocio(clientes, buscar):
             while numTelefonos < 1:
                 numTelefonos = int(input("Error! Ingrese cantidad de telefonos de nuevo: "))  
             for i in range (numTelefonos):
-                tel = int(input("Telefono " + str(i+1) + ": "))
+                tel = int(input("Telefono " + str( i+ 1) + ": "))
                 while len(str(tel)) < 10 or len(str(tel)) > 13 or tel < 0:
-                    tel = int(input("Error! Ingrese Telefono " + str(i+1) + " de nuevo: "))
-                clientes[buscar]["telefonos"]["telefono"+str(i+1)] = tel
+                    tel = int(input("Error! Ingrese Telefono " + str(i + 1) + " de nuevo: "))
+                clientes[buscar]["telefonos"]["telefono"+str(i + 1)] = tel
 
     return clientes
 
@@ -736,16 +736,16 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    crearDeporte(deportes, deporteBuscar)
+                    deportes = crearDeporte(deportes, deporteBuscar)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
                     listaDeDeportes(deportes)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    modificarDeporte(deportes, deporteBuscar)
+                    deportes = modificarDeporte(deportes, deporteBuscar)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    eliminarDeporte(deportes, deporteBuscar)
+                    deportes = eliminarDeporte(deportes, deporteBuscar)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
