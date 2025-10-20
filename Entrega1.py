@@ -310,58 +310,63 @@ def modificarDeporte(deportes):
 
     Parámetros:
         deportes: dict
-        busqueda: str
 
     Returns:
         bool: True si se realizó alguna modificación, False si no.
     """
-    keys = deportes.keys()
-    for i in range(len(keys): 
-        print (f"[{i+1}] {keys [i]}")
-    eleccion = int(input("Seleccione el número del deporte que desea modificar")
+    keys = list(deportes.keys())
+    for i in range(len(keys)): 
+        print (f"[{i+1}] {keys[i]}")
+    eleccion = int(input("Seleccione el número del deporte que desea modificar: "))
     while eleccion < 1 or eleccion > len(keys):
-        eleccion = int(input("Error seleccionar un numero apropiado")
+        eleccion = int(input("Error seleccionar un numero apropiado: "))
     deporteSeleccionado = keys[eleccion - 1]
-                       
-        while userInput != 0:
-            print(deporteSeleccionado, ":")
-            print(deportes[deporteSeleccionado]) 
-            print("¿Qué desea modificar?")
-            print("---------------------------")
-            print("[1] Modificar arancel")
-            print("[2] Modificar profesor principal")
-            print("---------------------------")
-            print("[0] Volver al menú anterior")
-            print("---------------------------")
 
-            userInput = int(input("Seleccione una opción: "))
-            print("")
+    userInput = -1                   
+    while userInput != 0:
+        print(deporteSeleccionado, ":")
+        print(deportes[deporteSeleccionado]) 
+        print("¿Qué desea modificar?")
+        print("---------------------------")
+        print("[1] Modificar arancel")
+        print("[2] Modificar director principal")
+        print("---------------------------")
+        print("[0] Volver al menú anterior")
+        print("---------------------------")
 
-            if userInput == 0:
-                print("Volviendo al menú anterior...\n")
+        userInput = int(input("Seleccione una opción: "))
+        print("")
 
-            elif userInput == 1:
-                print("Arancel actual:", deportes[busqueda]["arancel"])
-                cambiar = float(input("Nueva tarifa: "))
-                confirmar = input(f"¿Desea guardar el nuevo arancel {cambiar}? [si/no]: ").lower()
-                if confirmar == "si":
-                    deportes[busqueda]["arancel"] = cambiar
+        if userInput == 0:
+            print("Volviendo al menú anterior...\n")
+
+        elif userInput == 1:
+            print("Arancel actual:", deportes[deporteSeleccionado]["arancel"])
+            cambiar = float(input("Nueva tarifa: "))
+            while cambiar < 0:
+                cambiar = float(input("Error! Ingrese arancel de nuevo: "))
+            res = -1
+            while res not in [0, 1]:
+                res = int(input(f"¿Desea guardar el nuevo arancel {cambiar}? [1 = Sí / 0 = No]: "))
+                if res == 1:
+                    deportes[deporteSeleccionado]["arancel"] = cambiar
                     print("Tarifa modificada exitosamente\n")
-                    modificado = True
-                else:
+                elif res == 0:
                     print("Modificación cancelada\n")
 
-            elif userInput == 2:
-                print("Profesor actual:", deportes[busqueda]["director principal"])
-                cambiar = input("Nuevo profesor principal: ")
-                confirmar = input(f"¿Desea guardar el nuevo profesor '{cambiar}'? [si/no]: ").lower()
-                if confirmar == "si":
-                    deportes[busqueda]["director principal"] = cambiar
-                    print("Profesor cambiado exitosamente\n")
-                    modificado = True
-                else:
+        elif userInput == 2:
+            print("Profesor actual:", deportes[deporteSeleccionado]["director principal"])
+            cambiar = str(input("Nuevo director principal: "))
+            res = -1
+            while res not in [0, 1]:
+                res = int(input(f"¿Desea guardar el nuevo director principal {cambiar}? [1 = Sí / 0 = No]: "))
+                if res == 1:
+                    deportes[deporteSeleccionado]["director principal"] = cambiar
+                    print("Tarifa modificada exitosamente\n")
+                elif res == 0:
                     print("Modificación cancelada\n")
-        return modificado
+
+    return deportes
 
 
 
