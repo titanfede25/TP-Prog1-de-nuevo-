@@ -376,13 +376,28 @@ def eliminarDeporte(deportes):
 
     Parámetros:
         deportes: dict
-        busqueda: str
 
     Returns:
         bool: True si se dio de baja, False si no.
     """
-   
-    return
+    keys = list(deportes.keys())
+    for i in range(len(keys)): 
+        print (f"[{i+1}] {keys[i]}")
+    eleccion = int(input("Seleccione el número del deporte que desea dar de baja: "))
+    while eleccion < 1 or eleccion > len(keys):
+        eleccion = int(input("Error seleccionar un numero apropiado: "))
+    deporteSeleccionado = keys[eleccion - 1]
+
+    res = -1
+    while res not in [0, 1]:
+        res = int(input(f"¿Desea dar de baja {deporteSeleccionado} [1 = Sí / 0 = No]: "))
+        if res == 1:
+            deportes[deporteSeleccionado]["activo"] = False
+            deportes[deporteSeleccionado]["fechas"]["cierre"].append(time.strftime("%d/%m/%Y"))
+            print("Baja afectuada exitosamente\n")
+        elif res == 0:
+            print("Baja cancelada\n")
+    return deportes
 #----------------------------------------------------------------------------------------------
 # FUNCIONES DE PAGOS
 #----------------------------------------------------------------------------------------------
