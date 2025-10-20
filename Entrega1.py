@@ -14,7 +14,7 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
-...
+import time
 
 
 #----------------------------------------------------------------------------------------------
@@ -230,13 +230,53 @@ def crearDeporte(deportes, busqueda):
     Se crea o reactiva un deporte.
 
     Parámetros:
-        deportes: dict
-        busqueda: str
-
-    Returns:
-        bool: True si se creó o reactivó el deporte, False si se canceló o no se modificó.
+        deportes (dict)
+        busqueda (str)
+    Devuelve:
+        deportes (dict)
     """
-    return
+    if busqueda in deportes.keys():
+        print("Advertencia, este deporte ya existe.")
+        if deportes[busqueda]["activo"] == False:
+            res = -1
+            while res not in [0, 1]:
+                res = int(input("El deporte está dado de baja. ¿Desea darlo de alta? [1 = Sí / 0 = No]: "))
+                if res == 1:
+                    deportes[busqueda]["activo"] = True
+                    deportes[busqueda]["fechas"]["creacion"].append(time.strftime("%d/%m/%Y"))
+                elif res == 0:
+                    print("El deporte se mantiene inactivo.")
+    else:
+        arancel = float(input("Arancel: "))
+        while arancel < 0:
+            arancel = float(input("Error! Ingrese arancel de nuevo: "))
+        director = str(input("Nombre del director principal: "))
+        fecha_creacion = time.strftime("%d/%m/%Y")
+
+        print("\nDatos ingresados:")
+        print("Deporte:", busqueda)
+        print("Arancel:", arancel)
+        print("Director:", director)
+        print("Fecha de creación:", fecha_creacion)
+
+       
+        res = -1
+        while res not in [0, 1]:
+            res = int(input("¿Los datos son correctos? [1 = Sí / 0 = No]: "))
+            if res == 1:
+                deportes[busqueda] = {
+                    "activo": True,
+                    "arancel": arancel,
+                    "director principal": director,
+                    "fechas": {
+                        "creacion": [fecha_creacion],
+                        "cierre": []
+                    }
+                }
+                print("Deporte creado exitosamente.")
+            elif res == 0:
+                print("Operación cancelada.")
+    return deportes
 
 
 def listaDeDeportes(deportes):
@@ -245,15 +285,26 @@ def listaDeDeportes(deportes):
 
     Parámetros:
         deportes: dict
-
-    Returns:
-        list: Lista de claves de deportes activos.
     """
+    activos = False
+    print("\nDeportes activos:")
+    for clave, datos in deportes.items():
+        if datos["activo"] == True:
+            activos = True
+            print("---------------------------")
+            print("Deporte:", clave)
+            print("Arancel:", datos["arancel"])
+            print("Director principal:", datos["director principal"])
+            print("Fechas: ", datos["fechas"])
+    if activos == False:
+        print("No hay deportes activos registrados.")
+    else:
+        print("---------------------------")
     
     return
 
 
-def modificarDeporte(deportes, busqueda):
+def modificarDeporte(deportes):
     """
     Se modifica el deporte.
 
@@ -268,7 +319,7 @@ def modificarDeporte(deportes, busqueda):
     return 
 
 
-def eliminarDeporte(deportes, busqueda):
+def eliminarDeporte(deportes):
     """
     Da de baja un deporte y registra la fecha de cierre.
 
@@ -420,13 +471,22 @@ def main():
     
 
     deportes = {
+        "netball": {
+            "activo": False,
+            "arancel": 29000.0,
+            "director principal": "Robert Lee",
+            "fechas": {
+                "creacion": ["10/01/2025"],
+                "cierre": ["30/09/2025"]
+            }
+        },
         "football": {
             "activo": True,
             "arancel": 35000.0,
             "director principal": "Nicolás Medina",
             "fechas": {
-                "creacion": ["2025-04-01"],
-                "cierre": None
+                "creacion": ["01/04/2025"],
+                "cierre": []
             }
         },
         "hockey": {
@@ -434,8 +494,8 @@ def main():
             "arancel": 27000.0,
             "director principal": "Isabel Fuentes",
             "fechas": {
-                "creacion": ["2025-02-14"],
-                "cierre": None
+                "creacion": ["14/02/2025"],
+                "cierre": []
             }
         },
         "basketball": {
@@ -443,17 +503,17 @@ def main():
             "arancel": 28000.0,
             "director principal": "Isabel Martinez",
             "fechas": {
-                "creacion": ["2025-02-28"],
-                "cierre": None
+                "creacion": ["28/02/2025"],
+                "cierre": []
             }
         },
         "voley": {
-            "activo": False,
+            "activo": True,
             "arancel": 29000.0,
             "director principal": "Thiago Ribeiro",
             "fechas": {
-                "creacion": ["2025-01-10", "2025-07-20"],
-                "cierre": "2025-09-30"
+                "creacion": ["10/01/2025"],
+                "cierre": []
             }
         },
         "jiuJitsu": {
@@ -461,8 +521,8 @@ def main():
             "arancel": 26000.0,
             "director principal": "Bruno Sosa",
             "fechas": {
-                "creacion": ["2025-05-05"],
-                "cierre": None
+                "creacion": ["05/05/2025"],
+                "cierre": []
             }
         },
         "boxeo": {
@@ -470,17 +530,17 @@ def main():
             "arancel": 37000.0,
             "director principal": "Carla Vázquez",
             "fechas": {
-                "creacion": ["2025-03-18"],
-                "cierre": None
+                "creacion": ["18/03/2025"],
+                "cierre": []
             }
         },
         "karate": {
-            "activo": False,
+            "activo": True,
             "arancel": 31000.0,
             "director principal": "Lucía Herrera",
             "fechas": {
-                "creacion": ["2025-06-01"],
-                "cierre": "2025-08-15"
+                "creacion": ["01/06/2025"],
+                "cierre": []
             }
         },
         "tennis": {
@@ -488,8 +548,8 @@ def main():
             "arancel": 28000.0,
             "director principal": "Tomás Villalba",
             "fechas": {
-                "creacion": ["2025-07-10"],
-                "cierre": None
+                "creacion": ["10/07/2025"],
+                "cierre": []
             }
         },
         "natacion": {
@@ -497,8 +557,8 @@ def main():
             "arancel": 33000.0,
             "director principal": "Esteban Ríos",
             "fechas": {
-                "creacion": ["2025-04-25"],
-                "cierre": None
+                "creacion": ["25/04/2025"],
+                "cierre": []
             }
         },
         "handball": {
@@ -506,20 +566,21 @@ def main():
             "arancel": 29000.0,
             "director principal": "María Elena Torres",
             "fechas": {
-                "creacion": ["2025-02-05"],
-                "cierre": None
+                "creacion": ["05/02/2025"],
+                "cierre": []
             }
         },
         "rugby": {
-            "activo": False,
+            "activo": True,
             "arancel": 40000.0,
             "director principal": "Federico Ledesma",
             "fechas": {
-                "creacion": ["2025-01-15"],
-                "cierre": "2025-07-01"
+                "creacion": ["15/01/2025"],
+                "cierre": []
             }
         }
     }
+
 
     pagos = {
         "2025.10.15 17:34:18": {
@@ -711,7 +772,7 @@ def main():
                     print("MENÚ PRINCIPAL > MENÚ DE DEPORTES")
                     print("---------------------------")
                     print("[1] Ingresar deporte")
-                    print("[2] Buscar deporte/s")
+                    print("[2] Listar deportes")
                     print("[3] Modificar deporte")
                     print("[4] Eliminar deporte")
                     print("---------------------------")
@@ -725,27 +786,23 @@ def main():
                     else:
                         input("Opción inválida. Presione ENTER para volver a seleccionar.")
                 print()
-                
-                if (opcionSubmenu == "1" or opcionSubmenu == "3" or opcionSubmenu == "4"):                        
-                    deporteBuscar = input("Ingresar deporte: ")
-                    while (deporteBuscar not in deportes.keys()):
-                       deporteBuscar = input("Ingresar deporte valido: ")
 
 
                 if opcionSubmenu == "0": # Opción salir del submenú
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    deportes = crearDeporte(deportes, deporteBuscar)
+                    deporte = str(input("Ingresar deporte: ").lower())
+                    deportes = crearDeporte(deportes, deporte)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
                     listaDeDeportes(deportes)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    deportes = modificarDeporte(deportes, deporteBuscar)
+                    deportes = modificarDeporte(deportes)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    deportes = eliminarDeporte(deportes, deporteBuscar)
+                    deportes = eliminarDeporte(deportes)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
