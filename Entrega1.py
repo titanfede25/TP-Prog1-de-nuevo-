@@ -312,7 +312,7 @@ def modificarDeporte(deportes):
         deportes: dict
 
     Returns:
-        bool: True si se realizó alguna modificación, False si no.
+        Deportes
     """
     keys = list(deportes.keys())
     for i in range(len(keys)): 
@@ -378,7 +378,7 @@ def eliminarDeporte(deportes):
         deportes: dict
 
     Returns:
-        bool: True si se dio de baja, False si no.
+        deportes.
     """
     keys = list(deportes.keys())
     for i in range(len(keys)): 
@@ -404,10 +404,118 @@ def eliminarDeporte(deportes):
 def registrarPago(pagos, socios, deportes):
     """
     Registra un nuevo pago hecho por un socio.
+
+    parametros:
+        pagos (dict)
+        socios (dict)
+        deportes (dict)
+
+    devuelve
+        pagos (dict)
     """
-    return
+    anioActual = int(time.strftime("%Y"))
+    mesActual = int(time.strftime("%m"))
+    dni = str(input("Ingrese DNI del socio: "))
+
+    # Verificar si el socio existe y está activo
+    if dni not in socios.keys():
+        print("Error: el socio no existe.")
+        return pagos
+    if not socios[dni]["activo"]:
+        print("Error: el socio está dado de baja.")
+        return pagos
+
+    keysDeportes = list(deportes.keys())
+    for i in range(len(keysDeportes)): 
+        print (f"[{i+1}] {keysDeportes[i]}")
+    eleccion = int(input("Seleccione el número del deporte que desea modificar: "))
+    while eleccion < 1 or eleccion > len(keysDeportes):
+        eleccion = int(input("Error seleccionar un numero apropiado: "))
+    deporteSeleccionado = keysDeportes[eleccion - 1]
+
+    mes = 13
+    anio = anioActual
+
+    while (mes > mesActual and anio == anioActual):
+        while (mes < 1 or mes > 12):
+            mes = int(input("\nIngrese el mes del pago (ej: 10 para octubre): "))
+        while (anio < 1900 or anio > anioActual):
+            anio = int(input("\nIngrese el año del pago: "))
+        if (mes > mesActual and anio == anioActual):
+            print("\nError, fecha invalida.")
+    
+    keysPagos = list(pagos.keys())
+    for i in range(len(keysPagos)):
+        if pagos[keysPagos[i]]["mes"] == mes and pagos[keysPagos[i]]["ano"] == anio and dni == pagos[keysPagos[i]]["idSocio"] and deporteSeleccionado == pagos[keysPagos[i]]["idDeporte"]:
+            print("Pago invalido, pago ya efectuado.")
+            return pagos
+    
+    opcionDePago = -1
+
+    while (opcionDePago < 1 or opcionDePago > 3):
+        print("\nSeleccione el medio de pago:")
+        print("[1] Efectivo")
+        print("[2] Tarjeta")
+        print("[3] Transferencia")
+        opcionDePago = int(input(("\nOpcion elegida:")))
+
+    if (opcionDePago == 1):
+        metodoDePago = "efectivo"
+    elif (opcionDePago == 2):
+        metodoDePago = "tarjeta"
+    else:
+        metodoDePago = "transferencia"
+
+
+    monto = deportes[deporteSeleccionado]["arancel"]
+    if (mesActual > mes and anioActual == anio) or (anioActual > anio):
+        monto *= 1.2
+        print(f"Usted debe pagar {monto} que está un 20% aumentado, debido a que está atrasado. Aceptas el pago? [1 = si / 0 = No]")
+    else:
+        print(f"Usted debe pagar {monto}. Aceptas el pago? [1 = si / 0 = No]")
+    res = -1
+    while (res < 0 or res > 1):
+        res = int(input(""))
+        if (res == 1):
+            id_pago = f"{anioActual}.{mesActual}.{time.strftime("%d")} {time.strftime("%H")}:{time.strftime("%M")}:{time.strftime("%S")}"
+
+            pagos[id_pago] = {
+                "idSocio": dni,
+                "idDeporte": deporteSeleccionado,
+                "estadoDePago": "pagado",
+                "monto": monto,
+                "ano": anio,
+                "mes": mes,
+                "metodoDePago": metodoDePago
+            }
+            
+
+            print(f"\n✅ Pago registrado con éxito por ${monto} para {socios[dni]['nombre']} {socios[dni]['apellido']} ({deporteSeleccionado}).")
+            print(pagos)
+
+            return pagos
+
+        elif (res == 0):
+            print("No se realizo el pago.")
+            return pagos
+        else:
+            print("Error, opcion invalida. Ingrese de nuevo.")
+
+    x
+
+
+    return pagos
 
 def eliminarPago(pagos):
+    """
+    Elimina un pago
+
+    Parametros:
+        pagos (dict)
+
+    Devuelve:
+        pagos (dict)
+    """
     return
     
 
@@ -901,10 +1009,10 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    registrarPago(pagos, socios, deportes)
+                    pagos = registrarPago(pagos, socios, deportes)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    eliminarPago(pagos)
+                    pagos = eliminarPago(pagos)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
