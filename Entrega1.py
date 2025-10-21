@@ -435,10 +435,11 @@ def registrarPago(pagos, socios, deportes):
 
     mes = 13
     anio = anioActual
-
     while (mes > mesActual and anio == anioActual):
+        mes = -1
         while (mes < 1 or mes > 12):
             mes = int(input("\nIngrese el mes del pago (ej: 10 para octubre): "))
+        anio = 9999
         while (anio < 1900 or anio > anioActual):
             anio = int(input("\nIngrese el año del pago: "))
         if (mes > mesActual and anio == anioActual):
@@ -501,7 +502,6 @@ def registrarPago(pagos, socios, deportes):
         else:
             print("Error, opcion invalida. Ingrese de nuevo.")
 
-    x
 
 
     return pagos
@@ -762,8 +762,8 @@ def main():
             "idDeporte": "tennis",
             "estadoDePago": "pagado",
             "monto": 25000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.20 14:24:48": {
@@ -771,8 +771,8 @@ def main():
             "idDeporte": "boxeo",
             "estadoDePago": "pagado",
             "monto": 31000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
         "2025.10.21 10:15:32": {
@@ -780,8 +780,8 @@ def main():
             "idDeporte": "natacion",
             "estadoDePago": "pagado",
             "monto": 32000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.22 11:45:00": {
@@ -789,8 +789,8 @@ def main():
             "idDeporte": "football",
             "estadoDePago": "pagado",
             "monto": 30000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
         "2025.10.23 09:30:15": {
@@ -798,8 +798,8 @@ def main():
             "idDeporte": "basketball",
             "estadoDePago": "pagado",
             "monto": 28000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.24 16:00:00": {
@@ -807,8 +807,8 @@ def main():
             "idDeporte": "rugby",
             "estadoDePago": "pagado",
             "monto": 34000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
         "2025.10.25 13:22:45": {
@@ -816,8 +816,8 @@ def main():
             "idDeporte": "voley",
             "estadoDePago": "pagado",
             "monto": 27000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.26 18:45:30": {
@@ -825,8 +825,8 @@ def main():
             "idDeporte": "hockey",
             "estadoDePago": "pagado",
             "monto": 29000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
         "2025.10.27 12:10:50": {
@@ -834,8 +834,8 @@ def main():
             "idDeporte": "jiuJitsu",
             "estadoDePago": "pagado",
             "monto": 28000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "efectivo",
         },
         "2025.10.28 14:55:20": {
@@ -843,8 +843,8 @@ def main():
             "idDeporte": "karate",
             "estadoDePago": "pagado",
             "monto": 26000.0,
-            "ano": "2025",
-            "mes": "10",
+            "ano": 2025,
+            "mes": 10,
             "metodoDePago": "tarjeta",
         },
     } # Nuevo diccionario para almacenar los pagos
