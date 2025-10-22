@@ -243,7 +243,8 @@ def crearDeporte(deportes, busqueda):
                 res = int(input("El deporte está dado de baja. ¿Desea darlo de alta? [1 = Sí / 0 = No]: "))
                 if res == 1:
                     deportes[busqueda]["activo"] = True
-                    deportes[busqueda]["fechas"]["creacion"].append(time.strftime("%d/%m/%Y"))
+                    n = 1 + len(deportes[busqueda]["fechasActividad"])
+                    deportes[busqueda]["fechasActividad"][f"fecha{n}"] = [time.strftime("%d/%m/%Y")]
                 elif res == 0:
                     print("El deporte se mantiene inactivo.")
     else:
@@ -268,9 +269,8 @@ def crearDeporte(deportes, busqueda):
                     "activo": True,
                     "arancel": arancel,
                     "director principal": director,
-                    "fechas": {
-                        "creacion": [fecha_creacion],
-                        "cierre": []
+                    "fechasActividad": {
+                        "fecha1": [fecha_creacion]
                     }
                 }
                 print("Deporte creado exitosamente.")
@@ -295,7 +295,7 @@ def listaDeDeportes(deportes):
             print("Deporte:", clave)
             print("Arancel:", datos["arancel"])
             print("Director principal:", datos["director principal"])
-            print("Fechas: ", datos["fechas"])
+            print("Fechas de actividad: ", datos["fechasActividad"])
     if activos == False:
         print("No hay deportes activos registrados.")
     else:
@@ -372,32 +372,42 @@ def modificarDeporte(deportes):
 
 def eliminarDeporte(deportes):
     """
-    Da de baja un deporte y registra la fecha de cierre.
+    Da de baja un deporte activo y registra la fecha de cierre.
 
     Parámetros:
         deportes: dict
 
     Returns:
-        deportes.
+        deportes (dict)
     """
-    keys = list(deportes.keys())
+    keys = [k for k, v in deportes.items() if v["activo"] == True]
+
+    if not keys:
+        print("No hay deportes activos para dar de baja.")
+        return deportes
+
+    print("\nDeportes activos:")
     for i in range(len(keys)): 
-        print (f"[{i+1}] {keys[i]}")
+        print(f"[{i+1}] {keys[i]}")
+
     eleccion = int(input("Seleccione el número del deporte que desea dar de baja: "))
     while eleccion < 1 or eleccion > len(keys):
-        eleccion = int(input("Error seleccionar un numero apropiado: "))
+        eleccion = int(input("Error: seleccione un número válido: "))
+    
     deporteSeleccionado = keys[eleccion - 1]
 
     res = -1
     while res not in [0, 1]:
-        res = int(input(f"¿Desea dar de baja {deporteSeleccionado} [1 = Sí / 0 = No]: "))
+        res = int(input(f"¿Desea dar de baja {deporteSeleccionado}? [1 = Sí / 0 = No]: "))
         if res == 1:
             deportes[deporteSeleccionado]["activo"] = False
-            deportes[deporteSeleccionado]["fechas"]["cierre"].append(time.strftime("%d/%m/%Y"))
-            print("Baja afectuada exitosamente\n")
+            n = len(deportes[deporteSeleccionado]["fechasActividad"])
+            deportes[deporteSeleccionado]["fechasActividad"][f"fechas{n}"].append(time.strftime("%d/%m/%Y"))
+            print(f"Deporte '{deporteSeleccionado}' dado de baja exitosamente.\n")
         elif res == 0:
-            print("Baja cancelada\n")
+            print("Baja cancelada.\n")
     return deportes
+
 #----------------------------------------------------------------------------------------------
 # FUNCIONES DE PAGOS
 #----------------------------------------------------------------------------------------------
@@ -706,108 +716,96 @@ def main():
             "activo": False,
             "arancel": 29000.0,
             "director principal": "Robert Lee",
-            "fechas": {
-                "creacion": ["10/01/2025"],
-                "cierre": ["30/09/2025"]
+            "fechasActividad": {
+                "fechas1" : ["10/01/2025", "30/09/2025"]
             }
         },
         "football": {
             "activo": True,
             "arancel": 35000.0,
             "director principal": "Nicolás Medina",
-            "fechas": {
-                "creacion": ["01/04/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1" : ["01/04/2025"]
             }
         },
         "hockey": {
             "activo": True,
             "arancel": 27000.0,
             "director principal": "Isabel Fuentes",
-            "fechas": {
-                "creacion": ["14/02/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1" : ["14/02/2025"]
             }
         },
         "basketball": {
             "activo": True,
             "arancel": 28000.0,
             "director principal": "Isabel Martinez",
-            "fechas": {
-                "creacion": ["28/02/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["28/02/2025"],
             }
         },
         "voley": {
             "activo": True,
             "arancel": 29000.0,
             "director principal": "Thiago Ribeiro",
-            "fechas": {
-                "creacion": ["10/01/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["10/01/2025"],
             }
         },
         "jiuJitsu": {
             "activo": True,
             "arancel": 26000.0,
             "director principal": "Bruno Sosa",
-            "fechas": {
-                "creacion": ["05/05/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["05/05/2025"],
             }
         },
         "boxeo": {
             "activo": True,
             "arancel": 37000.0,
             "director principal": "Carla Vázquez",
-            "fechas": {
-                "creacion": ["18/03/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["18/03/2025"],
             }
         },
         "karate": {
             "activo": True,
             "arancel": 31000.0,
             "director principal": "Lucía Herrera",
-            "fechas": {
-                "creacion": ["01/06/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["01/06/2025"],
             }
         },
         "tennis": {
             "activo": True,
             "arancel": 28000.0,
             "director principal": "Tomás Villalba",
-            "fechas": {
-                "creacion": ["10/07/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["10/07/2025"],
             }
         },
         "natacion": {
             "activo": True,
             "arancel": 33000.0,
             "director principal": "Esteban Ríos",
-            "fechas": {
-                "creacion": ["25/04/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["25/04/2025"],
             }
         },
         "handball": {
             "activo": True,
             "arancel": 29000.0,
             "director principal": "María Elena Torres",
-            "fechas": {
-                "creacion": ["05/02/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["05/02/2025"],
             }
         },
         "rugby": {
             "activo": True,
             "arancel": 40000.0,
             "director principal": "Federico Ledesma",
-            "fechas": {
-                "creacion": ["15/01/2025"],
-                "cierre": []
+            "fechasActividad": {
+                "fechas1": ["15/01/2025"],
             }
         }
     }
