@@ -223,9 +223,15 @@ def bajaSocio(clientes, deportes, pagos, buscar): # COMENTARIO MENCIONADO EN MOD
         print("Cliente ya inactivo")
         return clientes
 
+    print(f"\nLista de pagos de {clientes[buscar]["nombre"]} {clientes[buscar]["apellido"]}:")
+
+    for k, v in pagos.items():
+        if (v["idSocio"] == buscar):
+            print(k, v)
+
     res = -1
     while (res < 0 or res > 1):
-        res = int(input("Desea dar de baja al socio? [1 = Si / 0 = No]: "))
+        res = int(input("\nDesea dar de baja al socio? [1 = Si / 0 = No]: "))
         if (res == 1):
             clientes[buscar]["activo"] = False
             print("Cliente dado de baja existosamente.")
