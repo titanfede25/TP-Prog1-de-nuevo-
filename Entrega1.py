@@ -461,8 +461,32 @@ def registrarPago(pagos, socios, deportes):
             print("Pago invalido, pago ya efectuado.")
             return pagos
     
-    opcionDePago = -1
+    activoEnFecha = False
+    for periodo in deportes[deporteSeleccionado]["fechasActividad"].values():
+        # Fecha de inicio
+        diaI, mesI, anioI = periodo[0].split("/")
+        anioI = int(anioI)
+        mesI = int(mesI)
 
+        # Fecha de cierre (si existe)
+        if len(periodo) == 2:
+            diaF, mesF, anioF = periodo[1].split("/")
+            anioF = int(anioF)
+            mesF = int(mesF)
+        else:
+            # Si no hay cierre, se asume activo hasta hoy
+            anioF = int(time.strftime("%Y"))
+            mesF = int(time.strftime("%m"))
+        
+        if (anio > anioI or (anio == anioI and mes >= mesI)) and (anio < anioF or (anio == anioF and mes <= mesF)):
+            activoEnFecha = True
+    if not activoEnFecha:
+        print(f"Error: el deporte seleccionado no estaba activo en esa fecha")
+        return pagos
+
+
+    
+    opcionDePago = -1
     while (opcionDePago < 1 or opcionDePago > 3):
         print("\nSeleccione el medio de pago:")
         print("[1] Efectivo")
@@ -516,7 +540,7 @@ def registrarPago(pagos, socios, deportes):
 
     return pagos
 
-def eliminarPago(pagos, socios, deportes):
+def eliminarPago(pagos, socios):
     """
     Elimina un pago
 
@@ -1067,7 +1091,7 @@ def main():
                     pagos = registrarPago(pagos, socios, deportes)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    pagos = eliminarPago(pagos, socios, deportes)
+                    pagos = eliminarPago(pagos, socios)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
