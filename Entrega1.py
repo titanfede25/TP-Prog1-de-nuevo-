@@ -428,7 +428,7 @@ def registrarPago(pagos, socios, deportes):
     keysDeportes = list(deportes.keys())
     for i in range(len(keysDeportes)): 
         print (f"[{i+1}] {keysDeportes[i]}")
-    eleccion = int(input("Seleccione el número del deporte que desea modificar: "))
+    eleccion = int(input("Seleccione el número del deporte: "))
     while eleccion < 1 or eleccion > len(keysDeportes):
         eleccion = int(input("Error seleccionar un numero apropiado: "))
     deporteSeleccionado = keysDeportes[eleccion - 1]
@@ -491,7 +491,7 @@ def registrarPago(pagos, socios, deportes):
             }
             
 
-            print(f"\n✅ Pago registrado con éxito por ${monto} para {socios[dni]['nombre']} {socios[dni]['apellido']} ({deporteSeleccionado}).")
+            print(f"\nPago registrado con éxito por ${monto} para {socios[dni]['nombre']} {socios[dni]['apellido']} ({deporteSeleccionado}).")
             print(pagos)
 
             return pagos
@@ -506,17 +506,74 @@ def registrarPago(pagos, socios, deportes):
 
     return pagos
 
-def eliminarPago(pagos):
+def eliminarPago(pagos, socios, deportes):
     """
     Elimina un pago
 
-    Parametros:
+    Parámetros:
         pagos (dict)
+        socios (dict)
+        deportes (dict)
 
     Devuelve:
         pagos (dict)
     """
-    return
+    dni = str(input("Ingrese DNI del socio: "))
+    if dni not in socios.keys():
+        print("Error: el socio no existe.")
+        return pagos
+    
+    # Filtrar los deportes en los que el socio tenga pagos
+    listaKeysPagos = list(pagos.keys())
+    listaDeportesPorSocio = []
+    for key in listaKeysPagos:
+        if pagos[key]["idSocio"] == dni and pagos[key]["idDeporte"] not in listaDeportesPorSocio:
+            listaDeportesPorSocio.append(pagos[key]["idDeporte"])
+
+    if not listaDeportesPorSocio:
+        print("El socio no tiene pagos registrados.")
+        return pagos
+
+    # Elegir deporte
+    for i, dep in enumerate(listaDeportesPorSocio):
+        print(f"[{i+1}] {dep}")
+    eleccion = int(input("Seleccione el número de deporte del pago: "))
+    while eleccion < 1 or eleccion > len(listaDeportesPorSocio):
+        eleccion = int(input("Error! Seleccionar un número apropiado: "))
+    deporteSeleccionado = listaDeportesPorSocio[eleccion - 1]
+
+    # Mostrar los pagos correspondientes al socio y deporte elegido
+    pagosFiltrados = []
+    contador = 0
+    for key in listaKeysPagos:
+        if pagos[key]["idSocio"] == dni and pagos[key]["idDeporte"] == deporteSeleccionado:
+            contador += 1
+            pagosFiltrados.append(key)
+            print(f"[{contador}] {pagos[key]}")
+
+    if not pagosFiltrados:
+        print("No hay pagos para este deporte.")
+        return pagos
+
+    # Elegir cuál eliminar
+    eleccion = int(input("Seleccione el número de pago: "))
+    while eleccion < 1 or eleccion > len(pagosFiltrados):
+        eleccion = int(input("Error! Seleccionar un número apropiado: "))
+
+    keySeleccionada = pagosFiltrados[eleccion - 1]
+    print("\nEste es el pago seleccionado:")
+    print(pagos[keySeleccionada])
+
+    print("ALERTA: Si confirmas, se eliminará permanentemente.")
+    confirmar = int(input("¿Quieres eliminar el pago? [1 = Sí / 0 = No]: "))
+    if confirmar == 1:
+        del pagos[keySeleccionada]
+        print("Pago eliminado exitosamente.")
+    else:
+        print("Operación cancelada.")
+
+    return pagos
+
     
 
 #----------------------------------------------------------------------------------------------
@@ -1012,7 +1069,7 @@ def main():
                     pagos = registrarPago(pagos, socios, deportes)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    pagos = eliminarPago(pagos)
+                    pagos = eliminarPago(pagos, socios, deportes)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
