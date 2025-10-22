@@ -219,6 +219,21 @@ def bajaSocio(clientes, deportes, pagos, buscar): # COMENTARIO MENCIONADO EN MOD
     Devuelve:
         clientes (diccionario)
     """
+    if (not clientes[buscar]["activo"]):
+        print("Cliente ya inactivo")
+        return clientes
+
+    res = -1
+    while (res < 0 or res > 1):
+        res = int(input("Desea dar de baja al socio? [1 = Si / 0 = No]: "))
+        if (res == 1):
+            clientes[buscar]["activo"] = False
+            print("Cliente dado de baja existosamente.")
+        elif (res == 0):
+            print("No pasó nada.")
+        else:
+            print("Input invalido.")
+
     return clientes
 
 
