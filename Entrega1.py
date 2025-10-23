@@ -703,12 +703,13 @@ def rellenar(texto, ancho, alineacion):
     else:
         return " " * espacios + texto
 
-def matrizInforme3(pagos, anoObjetivo):
+def mostrarMatrizMontosPorDeporte(pagos, anoObjetivo):
     matriz = {}
+    totalGeneral = 0  # Acumulador para el total general
 
+    # Construcción de la matriz
     for fechaHora in pagos:
         registro = pagos[fechaHora]
-
         if "ano" in registro and "mes" in registro and "idDeporte" in registro and "monto" in registro:
             ano = registro["ano"]
             mes = registro["mes"]
@@ -719,6 +720,31 @@ def matrizInforme3(pagos, anoObjetivo):
                 if deporte not in matriz:
                     matriz[deporte] = [0] * 12
                 matriz[deporte][mes - 1] += monto
+                totalGeneral += monto
+
+    anchoDeporte = 20
+    anchoMes = 10
+    anchoTotal = 12
+    meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"]
+
+    encabezado = rellenar("Deporte", anchoDeporte, "izquierda") + " | " + \
+                 " | ".join(rellenar(m, anchoMes, "derecha") for m in meses) + " | " + \
+                 rellenar("TOTAL", anchoTotal, "derecha")
+    print(encabezado)
+    print("-" * len(encabezado))
+
+    for deporte in matriz:
+        fila = matriz[deporte]
+        total = sum(fila)
+        linea = rellenar(deporte, anchoDeporte, "izquierda") + " | " + \
+                " | ".join(rellenar(int(valor), anchoMes, "derecha") for valor in fila) + " | " + \
+                rellenar(int(total), anchoTotal, "derecha")
+        print(linea)
+
+    # Mostrar total general
+    print("-" * len(encabezado))
+    print(rellenar("TOTAL GENERAL", anchoDeporte + 13 * (anchoMes + 3) - 3, "derecha") + \
+          rellenar(int(totalGeneral), anchoTotal, "derecha"))
 
 
 #----------------------------------------------------------------------------------------------
@@ -1268,26 +1294,14 @@ def main():
                         print(linea)
 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    
+                
+                    anoIngresado = int(input("Ingrese el año para el informe (ej: 2023): "))
+                    while anoIngresado < 1900 or anoIngresado > int(time.strftime("%Y")):
+                        anoIngresado = int(input("Año inválido. Ingrese un año válido: "))
+                    mostrarMatrizMontosPorDeporte(pagos, anoIngresado)
 
-                    anchoDeporte = 20
-                    anchoMes = 10
-                    anchoTotal = 12
-                    meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"]
-
-                    encabezado = rellenar("Deporte", anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(m, anchoMes, "derecha") for m in meses) + " | " + rellenar("TOTAL", anchoTotal, "derecha")
-                    print(encabezado)
-                    print("-" * len(encabezado))
-
-                    for deporte in matriz:
-                        fila = matriz[deporte]
-                        total = sum(fila)
-                        linea = rellenar(deporte, anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(int(valor), anchoMes, "derecha") for valor in fila) + " | " + rellenar(int(total), anchoTotal, "derecha")
-                        print(linea)
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    ...
-
-
+                    print("Funcionalidad en desarrollo...")
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
                 
