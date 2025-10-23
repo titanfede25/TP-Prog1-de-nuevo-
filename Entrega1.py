@@ -1220,7 +1220,7 @@ def main():
                     print("[1] Pagos del mes")
                     print("[2] Resumen Anual de cantidad de pagos por deporte")
                     print("[3] Resumen Anual de Pagos  (Montos cobrados, deudas, descuentos)")
-                    print("[4] Porcentajes de Socios Morosos y al día")
+                    print("[4] ...")
                     print("---------------------------")
                     print("[0] Volver al menú anterior")
                     print("---------------------------")
@@ -1237,13 +1237,9 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    mes = int(input("Ingresá el número de mes (1-12): "))
-                    while mes < 1 or mes > 12:
-                        mes = int(input("Mes inválido. Ingresá un número de mes válido (1-12): "))
-
-                    ano = int(input("Ingresá el año (por ejemplo 2025): "))
-                    while ano < 1900 or ano > 2100:
-                        ano = int(input("Año inválido. Ingresá un año válido: "))   
+                    mes = int(time.strftime("%m"))
+                    ano = int(time.strftime("%Y"))
+   
 
                     mostrarPagosPorMesYAnio(pagos, socios, mes, ano)
 
@@ -1294,10 +1290,7 @@ def main():
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
-
-
-
-        
+                
         if opcionSubmenu != "0": # Pausa entre opciones. No la realiza si se vuelve de un submenú
             input("\nPresione ENTER para volver al menú.")
             print("\n\n")
