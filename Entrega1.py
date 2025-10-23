@@ -645,13 +645,13 @@ def matrizInformes1(pagos, socios, mesObjetivo, anoObjetivo):
         else:
             return " " * espacios + texto
 
-    # Definición de anchos
+    
     anchoFecha = 21
     anchoCliente = 25
     anchoDeporte = 15
     anchoMonto = 10
 
-    # Encabezado
+    
     encabezado = rellenar("Fecha/Hora", anchoFecha, "izquierda") + " | " + \
                  rellenar("Cliente", anchoCliente, "izquierda") + " | " + \
                  rellenar("Deporte", anchoDeporte, "izquierda") + " | " + \
@@ -659,7 +659,7 @@ def matrizInformes1(pagos, socios, mesObjetivo, anoObjetivo):
     print(encabezado)
     print("-" * len(encabezado))
 
-    # Filas
+    
     for fechaHora in pagos:
         registro = pagos[fechaHora]
         if "idSocio" in registro and "mes" in registro and "ano" in registro and "monto" in registro and "idDeporte" in registro:
@@ -711,9 +711,9 @@ def rellenar(texto, ancho, alineacion):
 
 def matrizInformes3(pagos, anoObjetivo):
     matriz = {}
-    totalGeneral = 0  # Acumulador para el total general
+    totalGeneral = 0  
 
-    # Construcción de la matriz
+    
     for fechaHora in pagos:
         registro = pagos[fechaHora]
         if "ano" in registro and "mes" in registro and "idDeporte" in registro and "monto" in registro:
@@ -747,10 +747,31 @@ def matrizInformes3(pagos, anoObjetivo):
                 rellenar(int(total), anchoTotal, "derecha")
         print(linea)
 
-    # Mostrar total general
+    
     print("-" * len(encabezado))
     print(rellenar("TOTAL GENERAL", anchoDeporte + 13 * (anchoMes + 3) - 3, "derecha") + \
           rellenar(int(totalGeneral), anchoTotal, "derecha"))
+
+def matrizInforme4(pagos, anioObjetivo):
+    resumen = {}
+    totalPagos = 0
+
+    for registro in pagos.values():
+        if registro.get("ano") == anioObjetivo and registro.get("estadoDePago") == "pagado":
+            metodo = registro.get("metodoDePago", "desconocido")
+            resumen[metodo] = resumen.get(metodo, 0) + 1
+            totalPagos += 1
+
+    informe = []
+    for metodo, cantidad in resumen.items():
+        porcentaje = (cantidad / totalPagos) * 100 if totalPagos > 0 else 0
+        informe.append({
+            "metodoDePago": metodo,
+            "cantidad": cantidad,
+            "porcentaje": round(porcentaje, 2)
+        })
+
+    return informe
 
 
 #----------------------------------------------------------------------------------------------
@@ -976,8 +997,6 @@ def main():
             }
         }
     }
-
-
     pagos = {
         "2025.10.15 17:34:18": {
             "idSocio": "11222333",
@@ -1069,6 +1088,7 @@ def main():
             "mes": 10,
             "metodoDePago": "tarjeta",
         },
+
     } # Nuevo diccionario para almacenar los pagos
 
 
@@ -1252,7 +1272,7 @@ def main():
                     print("[1] Pagos del mes")
                     print("[2] Resumen Anual de cantidad de pagos por deporte")
                     print("[3] Resumen Anual de Pagos  (Montos cobrados, deudas, descuentos)")
-                    print("[4] ...")
+                    print("[4] Resumen Anual de Métodos de Pago")
                     print("---------------------------")
                     print("[0] Volver al menú anterior")
                     print("---------------------------")
@@ -1307,7 +1327,16 @@ def main():
                     matrizInformes3(pagos, anoIngresado)
 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    print("Funcionalidad en desarrollo...")
+                    anoIngresado = int(input("Ingrese el año para el informe (ej: 2023): "))
+                    while anoIngresado < 1900 or anoIngresado > int(time.strftime("%Y")):
+                        anoIngresado = int(input("Año inválido. Ingrese un año válido: "))
+                    print(f"\nResumen de métodos de pago para el año {anoIngresado}")
+                    print("Método de Pago     | Cantidad | Porcentaje")
+                    print("-------------------|----------|-----------")
+                    grupo = matrizInforme4(pagos, anoIngresado)
+                    for fila in grupo:
+                        print(f"{fila['metodoDePago']:<19}| {fila['cantidad']:^8} | {fila['porcentaje']:>9.2f}%")
+
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
                 
