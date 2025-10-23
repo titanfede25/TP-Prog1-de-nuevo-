@@ -630,6 +630,96 @@ def eliminarPago(pagos, socios):
     return pagos
 
     
+#----------------------------------------------------------------------------------------------
+# FUNCIONES DE INFORMES
+#----------------------------------------------------------------------------------------------
+def mostrarPagosPorMesYAnio(pagos, socios, mesObjetivo, anoObjetivo):
+    def rellenar(texto, ancho, alineacion):
+        texto = str(texto)
+        largo = len(texto)
+        if largo >= ancho:
+            return texto[:ancho]
+        espacios = ancho - largo
+        if alineacion == "izquierda":
+            return texto + " " * espacios
+        else:
+            return " " * espacios + texto
+
+    anchoFecha = 21
+    anchoCliente = 25
+    anchoMonto = 10
+
+    encabezado = rellenar("Fecha/Hora", anchoFecha, "izquierda") + " | " + \
+                 rellenar("Cliente", anchoCliente, "izquierda") + " | " + \
+                 rellenar("Monto", anchoMonto, "derecha")
+    print(encabezado)
+    print("-" * len(encabezado))
+
+    for fechaHora in pagos:
+        registro = pagos[fechaHora]
+        if "idSocio" in registro and "mes" in registro and "ano" in registro and "monto" in registro:
+            if registro["mes"] == mesObjetivo and registro["ano"] == anoObjetivo:
+                idSocio = registro["idSocio"]
+                monto = registro["monto"]
+
+                if idSocio in socios:
+                    nombre = socios[idSocio]["nombre"]
+                    apellido = socios[idSocio]["apellido"]
+                    cliente = nombre + " " + apellido
+
+                    linea = rellenar(fechaHora, anchoFecha, "izquierda") + " | " + \
+                            rellenar(cliente, anchoCliente, "izquierda") + " | " + \
+                            rellenar(int(monto), anchoMonto, "derecha")
+                    print(linea)
+
+
+def matrizInforme2(pagos, anoObjetivo):
+    matriz = {}
+
+    for fechaHora in pagos:
+        registro = pagos[fechaHora]
+
+        if "ano" in registro and "mes" in registro and "idDeporte" in registro:
+            ano = registro["ano"]
+            mes = registro["mes"]
+            deporte = registro["idDeporte"]
+
+            if ano == anoObjetivo:
+                if deporte not in matriz:
+                    matriz[deporte] = [0] * 12
+                matriz[deporte][mes - 1] += 1
+
+    return matriz
+
+
+def rellenar(texto, ancho, alineacion):
+    texto = str(texto)
+    largo = len(texto)
+    if largo >= ancho:
+        return texto[:ancho]
+    espacios = ancho - largo
+    if alineacion == "izquierda":
+        return texto + " " * espacios
+    else:
+        return " " * espacios + texto
+
+def matrizInforme3(pagos, anoObjetivo):
+    matriz = {}
+
+    for fechaHora in pagos:
+        registro = pagos[fechaHora]
+
+        if "ano" in registro and "mes" in registro and "idDeporte" in registro and "monto" in registro:
+            ano = registro["ano"]
+            mes = registro["mes"]
+            deporte = registro["idDeporte"]
+            monto = registro["monto"]
+
+            if ano == anoObjetivo:
+                if deporte not in matriz:
+                    matriz[deporte] = [0] * 12
+                matriz[deporte][mes - 1] += monto
+
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -1147,16 +1237,60 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    ...
-                    
+                    mes = int(input("Ingresá el número de mes (1-12): "))
+                    while mes < 1 or mes > 12:
+                        mes = int(input("Mes inválido. Ingresá un número de mes válido (1-12): "))
+
+                    ano = int(input("Ingresá el año (por ejemplo 2025): "))
+                    while ano < 1900 or ano > 2100:
+                        ano = int(input("Año inválido. Ingresá un año válido: "))   
+
+                    mostrarPagosPorMesYAnio(pagos, socios, mes, ano)
+
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    ...
-                
+                    
+                    anoIngresado = int(input("Ingrese el año para el informe (ej: 2023): "))
+                    while anoIngresado < 1900 or anoIngresado > int(time.strftime("%Y")):
+                        anoIngresado = int(input("Año inválido. Ingrese un año válido: "))
+                        
+                    matriz = matrizInforme2(pagos, anoIngresado)
+
+    
+                    anchoDeporte = 20
+                    anchoMes = 4
+                    meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"]
+
+              
+                    encabezado = rellenar("Deporte", anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(m, anchoMes, "derecha") for m in meses)
+                    print(encabezado)
+                    print("-" * len(encabezado))
+
+         
+                    for deporte in matriz:
+                        fila = matriz[deporte]
+                        linea = rellenar(deporte, anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(valor, anchoMes, "derecha") for valor in fila)
+                        print(linea)
+
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
-                
+                    
+
+                    anchoDeporte = 20
+                    anchoMes = 10
+                    anchoTotal = 12
+                    meses = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"]
+
+                    encabezado = rellenar("Deporte", anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(m, anchoMes, "derecha") for m in meses) + " | " + rellenar("TOTAL", anchoTotal, "derecha")
+                    print(encabezado)
+                    print("-" * len(encabezado))
+
+                    for deporte in matriz:
+                        fila = matriz[deporte]
+                        total = sum(fila)
+                        linea = rellenar(deporte, anchoDeporte, "izquierda") + " | " + " | ".join(rellenar(int(valor), anchoMes, "derecha") for valor in fila) + " | " + rellenar(int(total), anchoTotal, "derecha")
+                        print(linea)
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
                     ...
+
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
@@ -1168,9 +1302,6 @@ def main():
             input("\nPresione ENTER para volver al menú.")
             print("\n\n")
 
-
-# Punto de entrada al programa
-main()
 
 # Punto de entrada al programa
 main()
