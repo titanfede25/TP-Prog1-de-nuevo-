@@ -7,7 +7,7 @@ Autor: Equipo 1. Federico Sznajderhaus, Benjamín Moyano, Samuel Franco Salazar,
 
 Descripción: Un club deportivo con actividades aranceladas necesita el desarrollo de una aplicación para informatizar la gestión de los pagos de los socios por cada deporte.
 
-Pendientes:
+Pendientes: Respecto a los inputs que esperan enteros, tenemos pensado utilizar try y except en general (en el main) para que no se rompa el programa completo, en el marco de la entrega final.
 -----------------------------------------------------------------------------------------------
 """
 
@@ -28,7 +28,7 @@ def altaSocio(clientes, buscar):
         clientes (dict)
         buscar (str)
     Devuelve:
-        clientes (diccionario)
+        clientes (dict)
     """
     
     nombre = str(input("Nombre: "))
@@ -66,7 +66,7 @@ def altaSocio(clientes, buscar):
 
     clientes[buscar] = {"activo": True, "nombre": nombre, "apellido": apellido, "fechaNacimiento": fechaNacimiento, "telefonos": {} }
 
-    numTelefonos = int(input("Cantidad de telefonos: "))
+    numTelefonos = int(input("Cantidad de telefonos: ")) # Atributo multivaluado
     while numTelefonos < 1:
         numTelefonos = int(input("Error! Ingrese cantidad de telefonos de nuevo: "))  
     for i in range (numTelefonos):
@@ -139,7 +139,7 @@ def modificarSocio(clientes, buscar):
             while (res != 1 and res != 0):
                 print("Estado actual:", estadoSocio)
                 if (estadoSocio == True):
-                    res = int(input("Desea darlo de baja? [1 = si / 0 = No]: ")) #PODEMOS DARLO DE BAJA DE UN DEPORTE ACA MEJOR Y LO QUE ESTA ACA LO PONEMOS EN ELIMINAR
+                    res = int(input("Desea darlo de baja? [1 = si / 0 = No]: ")) 
                 else:
                     res = int(input("Desea darlo de alta? [1 = si / 0 = No]: "))
                 if (res == 1 and estadoSocio == True):
@@ -196,7 +196,7 @@ def modificarSocio(clientes, buscar):
             print("Fecha de nacimiento cambiada existosamente")
 
         elif (userInput == 5):
-            print("Actual cant de telefonos: ", len(clientes[buscar]["telefonos"]))
+            print("Actual cant de telefonos: ", len(clientes[buscar]["telefonos"])) # Atributo multivaluado
             numTelefonos = int(input("Cantidad de telefonos: "))
             while numTelefonos < 1:
                 numTelefonos = int(input("Error! Ingrese cantidad de telefonos de nuevo: "))  
@@ -208,13 +208,14 @@ def modificarSocio(clientes, buscar):
 
     return clientes
 
-def bajaSocio(clientes, deportes, pagos, buscar): # COMENTARIO MENCIONADO EN MODIFICAR
+def bajaSocio(clientes, pagos, buscar): 
     """
     Dar de baja logicamente a un socio
 
     Parametros:
         clientes (dict)
         buscar (str)
+        pagos (dict)
     
     Devuelve:
         clientes (diccionario)
@@ -248,7 +249,7 @@ def bajaSocio(clientes, deportes, pagos, buscar): # COMENTARIO MENCIONADO EN MOD
 #----------------------------------------------------------------------------------------------
 def crearDeporte(deportes, busqueda):
     """
-    Se crea o reactiva un deporte.
+    Se crea o reactiva un deporte (también guarda su fecha)
 
     Parámetros:
         deportes (dict)
@@ -265,7 +266,7 @@ def crearDeporte(deportes, busqueda):
                 if res == 1:
                     deportes[busqueda]["activo"] = True
                     n = 1 + len(deportes[busqueda]["fechasActividad"])
-                    deportes[busqueda]["fechasActividad"][f"fecha{n}"] = [time.strftime("%d/%m/%Y")]
+                    deportes[busqueda]["fechasActividad"][f"fecha{n}"] = [time.strftime("%d/%m/%Y")] # Atributo multivaluado
                 elif res == 0:
                     print("El deporte se mantiene inactivo.")
     else:
@@ -305,7 +306,9 @@ def listaDeDeportes(deportes):
     Muestra todos los deportes activos (sin fecha de cierre).
 
     Parámetros:
-        deportes: dict
+        deportes (dict)
+    Devuelve:
+        n/a
     """
     activos = False
     print("\nDeportes activos:")
@@ -330,10 +333,10 @@ def modificarDeporte(deportes):
     Se modifica el deporte.
 
     Parámetros:
-        deportes: dict
+        deportes (dict)
 
     Returns:
-        Deportes
+        deportes (dict)
     """
     keys = list(deportes.keys())
     for i in range(len(keys)): 
@@ -396,7 +399,7 @@ def eliminarDeporte(deportes):
     Da de baja un deporte activo y registra la fecha de cierre.
 
     Parámetros:
-        deportes: dict
+        deportes (dict)
 
     Returns:
         deportes (dict)
@@ -423,7 +426,7 @@ def eliminarDeporte(deportes):
         if res == 1:
             deportes[deporteSeleccionado]["activo"] = False
             n = len(deportes[deporteSeleccionado]["fechasActividad"])
-            deportes[deporteSeleccionado]["fechasActividad"][f"fechas{n}"].append(time.strftime("%d/%m/%Y"))
+            deportes[deporteSeleccionado]["fechasActividad"][f"fechas{n}"].append(time.strftime("%d/%m/%Y")) # Append a atributo multivaluado
             print(f"Deporte '{deporteSeleccionado}' dado de baja exitosamente.\n")
         elif res == 0:
             print("Baja cancelada.\n")
@@ -436,12 +439,12 @@ def registrarPago(pagos, socios, deportes):
     """
     Registra un nuevo pago hecho por un socio.
 
-    parametros:
+    Parametros:
         pagos (dict)
         socios (dict)
         deportes (dict)
 
-    devuelve
+    Devuelve
         pagos (dict)
     """
     anioActual = int(time.strftime("%Y"))
@@ -482,20 +485,17 @@ def registrarPago(pagos, socios, deportes):
             print("Pago invalido, pago ya efectuado.")
             return pagos
     
-    activoEnFecha = False
+    activoEnFecha = False # Verificación de si el deporte estaba activo en el mes/año del pago
     for periodo in deportes[deporteSeleccionado]["fechasActividad"].values():
-        # Fecha de inicio
         diaI, mesI, anioI = periodo[0].split("/")
         anioI = int(anioI)
         mesI = int(mesI)
 
-        # Fecha de cierre (si existe)
         if len(periodo) == 2:
             diaF, mesF, anioF = periodo[1].split("/")
             anioF = int(anioF)
             mesF = int(mesF)
         else:
-            # Si no hay cierre, se asume activo hasta hoy
             anioF = int(time.strftime("%Y"))
             mesF = int(time.strftime("%m"))
         
@@ -525,7 +525,7 @@ def registrarPago(pagos, socios, deportes):
 
     monto = deportes[deporteSeleccionado]["arancel"]
     if (mesActual > mes and anioActual == anio) or (anioActual > anio):
-        monto *= 1.2
+        monto *= 1.2 # 20% de recargo en caso de que sea un pago atrasado
         print(f"Usted debe pagar {monto} que está un 20% aumentado, debido a que está atrasado. Aceptas el pago? [1 = si / 0 = No]")
     else:
         print(f"Usted debe pagar {monto}. Aceptas el pago? [1 = si / 0 = No]")
@@ -568,7 +568,6 @@ def eliminarPago(pagos, socios):
     Parámetros:
         pagos (dict)
         socios (dict)
-        deportes (dict)
 
     Devuelve:
         pagos (dict)
@@ -578,7 +577,6 @@ def eliminarPago(pagos, socios):
         print("Error: el socio no existe.")
         return pagos
     
-    # Filtrar los deportes en los que el socio tenga pagos
     listaKeysPagos = list(pagos.keys())
     listaDeportesPorSocio = []
     for key in listaKeysPagos:
@@ -589,7 +587,6 @@ def eliminarPago(pagos, socios):
         print("El socio no tiene pagos registrados.")
         return pagos
 
-    # Elegir deporte
     for i, dep in enumerate(listaDeportesPorSocio):
         print(f"[{i+1}] {dep}")
     eleccion = int(input("Seleccione el número de deporte del pago: "))
@@ -597,7 +594,6 @@ def eliminarPago(pagos, socios):
         eleccion = int(input("Error! Seleccionar un número apropiado: "))
     deporteSeleccionado = listaDeportesPorSocio[eleccion - 1]
 
-    # Mostrar los pagos correspondientes al socio y deporte elegido
     pagosFiltrados = []
     contador = 0
     for key in listaKeysPagos:
@@ -610,7 +606,6 @@ def eliminarPago(pagos, socios):
         print("No hay pagos para este deporte.")
         return pagos
 
-    # Elegir cuál eliminar
     eleccion = int(input("Seleccione el número de pago: "))
     while eleccion < 1 or eleccion > len(pagosFiltrados):
         eleccion = int(input("Error! Seleccionar un número apropiado: "))
@@ -634,6 +629,19 @@ def eliminarPago(pagos, socios):
 # FUNCIONES DE INFORMES
 #----------------------------------------------------------------------------------------------
 def matrizInformes1(pagos, socios, mesObjetivo, anoObjetivo):
+    """
+    Muestra una lista detallada de todos los pagos realizados del mes actual.
+
+    Parámetros:
+        pagos (dict)
+        socios (dict)
+        mesObjetivo (int): El mes para el cual se desea el informe.
+        anoObjetivo (int): El año para el cual se desea el informe.
+
+    Devuelve:
+        n/a
+    """
+
     def rellenar(texto, ancho, alineacion):
         texto = str(texto)
         largo = len(texto)
@@ -680,6 +688,16 @@ def matrizInformes1(pagos, socios, mesObjetivo, anoObjetivo):
                     print(linea)
 
 def matrizInforme2(pagos, anoObjetivo):
+    """
+    Genera una matriz que resume la cantidad de pagos realizados por cada deporte durante cada mes de un año específico.
+
+    Parámetros:
+        pagos (dict)
+        anoObjetivo (int)
+
+    Devuelve:
+        matriz (dict)
+    """
     matriz = {}
 
     for fechaHora in pagos:
@@ -699,6 +717,17 @@ def matrizInforme2(pagos, anoObjetivo):
 
 
 def rellenar(texto, ancho, alineacion):
+    """
+    Función auxiliar para formatear texto y asegurar un ancho fijo, útil para tablas. Recorta el texto si es más largo que el ancho y rellena con espacios si es más corto.
+
+    Parámetros:
+        texto (any): El valor a formatear y rellenar (se convierte a str).
+        ancho (int): El ancho total deseado para la cadena de texto.
+        alineacion (str): "izquierda" para alinear a la izquierda (rellena a la derecha) o cualquier otra cosa para alinear a la derecha (rellena a la izquierda).
+
+    Devuelve:
+        str: La cadena de texto formateada con el ancho y alineación especificados.
+    """
     texto = str(texto)
     largo = len(texto)
     if largo >= ancho:
@@ -710,6 +739,16 @@ def rellenar(texto, ancho, alineacion):
         return " " * espacios + texto
 
 def matrizInformes3(pagos, anoObjetivo):
+    """
+    Genera y muestra una matriz que resume la suma total de montos de pagos (ingresos) por cada deporte, distribuidos por mes para un año específico. También calcula y muestra el total general recaudado en el año.
+
+    Parámetros:
+        pagos (dict)
+        anoObjetivo (int): El año para el cual se desea el informe de ingresos.
+
+    Devuelve:
+        n/a
+    """
     matriz = {}
     totalGeneral = 0  
 
@@ -753,6 +792,19 @@ def matrizInformes3(pagos, anoObjetivo):
           rellenar(int(totalGeneral), anchoTotal, "derecha"))
 
 def matrizInforme4(pagos, anioObjetivo):
+    """
+    Calcula un resumen de la cantidad de pagos y el porcentaje de pagos por cada método de pago ('efectivo', 'tarjeta', 'transferencia') para un año específico.
+
+    Parámetros:
+        pagos (dict)
+        anioObjetivo (int): El año para el cual se desea el informe.
+
+    Devuelve:
+        list: Una lista de diccionarios, donde cada diccionario contiene:
+            - "metodoDePago" (str)
+            - "cantidad" (int)
+            - "porcentaje" (float)
+    """
     resumen = {}
     totalPagos = 0
 
@@ -997,6 +1049,8 @@ def main():
             }
         }
     }
+    
+
     pagos = {
         "2025.10.15 17:34:18": {
             "idSocio": "11222333",
@@ -1173,7 +1227,7 @@ def main():
                         socios = modificarSocio(socios, dniBuscar)
                     
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    socios = bajaSocio(socios, deportes, pagos, dniBuscar)
+                    socios = bajaSocio(socios, pagos, dniBuscar)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
